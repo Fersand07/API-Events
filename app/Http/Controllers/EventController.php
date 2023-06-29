@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\EventResource;
 use App\Models\Events;
-use Illuminate\Console\Scheduling\Event;
 use Illuminate\Http\Request;
+use App\Http\Resources\EventResource;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Console\Scheduling\Event;
 
 class EventController extends Controller
 {
@@ -26,17 +27,13 @@ class EventController extends Controller
             'location' => ['required', 'max:20'],
             'date' => ['required', 'max:20'],
             'description' => ['required', 'max:255'],
-            'image' => ['required', 'image'],
+            'image' => ['required'],
         ]);
 
         if($request->hasFile('image')){
             $file = $request->file('image');
-
-            $imagePath = $file->storePubliclyAs(
-                'users/events',
-                $file->hashName(),
-                config('filesystems.default')
-            );
+            
+            $path = Storage::put('public/events', $file, 'public');
         }
 
         $event = Events::create([
@@ -44,7 +41,7 @@ class EventController extends Controller
             'location' => $request->get('location'),
             'date' => $request->get('date'),
             'description' => $request->get('description'),
-            'image' => $imagePath,
+            'image' => $path,
         ]);
 
         return EventResource::make($event);
