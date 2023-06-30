@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -31,8 +32,15 @@ class UserController extends Controller
             'username' => ['required', 'max:20'],
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'max:255'],
-            'cellphone' => ['required']
+            'cellphone' => ['required'],
+            'profile_image' 
         ]);
+
+        if($request->hasFile('profile_image')){
+            $file = $request->file('profile_image');
+            
+            $path = Storage::put('public/users', $file, 'public');
+        }
 
         $user = User::create([
             'name' => $request->get('name'),
@@ -40,7 +48,8 @@ class UserController extends Controller
             'username' => $request->get('username'),
             'email' => $request->get('email'),
             'password' => $request->get('password'),
-            'cellphone' => $request->get('cellphone')
+            'cellphone' => $request->get('cellphone'),
+            'profile_image' => $path
         ]);
 
         return UserResource::make($user);
@@ -85,5 +94,6 @@ class UserController extends Controller
     {
         $user = User::find($id);
         $user ->delete();
+        return $user;
     }
 }
