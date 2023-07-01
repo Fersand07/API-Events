@@ -52,22 +52,35 @@ class EventController extends Controller
      */
     public function show(string $id)
     {
-        //
+  
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, int $id)
     {
-        //
+        $request->validate([
+            'name' => ['required', 'max:255'],
+            'location' => ['required', 'max:20'],
+            'date' => ['required', 'max:20'],
+            'description' => ['required', 'max:255'],
+        ]);
+
+        $event = Events::find($id);
+
+        $event->update([
+            'name' => $request->get('name'),
+            'location' => $request->get('location'),
+            'date' => $request->get('date'),
+            'description' => $request->get('description'),
+        ]);
+
+        return EventResource::make($event);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(string $id)
     {
-        //
+       $event = Events::find($id);
+       $event->delete();
+       return $event;
     }
 }
