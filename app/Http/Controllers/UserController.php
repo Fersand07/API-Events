@@ -31,7 +31,7 @@ class UserController extends Controller
             'lastname' => ['required', 'max:20'],
             'username' => ['required', 'max:20'],
             'email' => ['required', 'email', 'unique:users,email'],
-            'password' => ['required', 'max:255'],
+            'password' => 'required|confirmed', 'max:255',
             'cellphone' => ['required'],
             'profile_image' 
         ]);
@@ -87,9 +87,6 @@ class UserController extends Controller
         return UserResource::make($user);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $user = User::find($id);
