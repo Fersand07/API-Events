@@ -39,15 +39,14 @@ class AuthController extends Controller
     return response()->json([
         "message" => "User Profile OK",
         "userData" => auth()->user()
+
     ]);
 }
 
     public function logout(Request $request){
-    
-
-}
-
-    public function allUsers(Request $request){
-    
+    $request->user()->currentAccesToken()->delete(); 
+    return response()->json([
+        
+    ]);
 }
 }

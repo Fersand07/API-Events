@@ -19,7 +19,6 @@ class EventController extends Controller
         return EventResource::collection($events);
     }
 
-
     public function store(Request $request)
     {
         $request->validate([
@@ -50,9 +49,10 @@ class EventController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-  
+        $event = Events::find($id); 
+        return EventResource::make($event);
     }
 
     public function update(Request $request, int $id)
